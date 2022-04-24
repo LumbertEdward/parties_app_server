@@ -1,0 +1,170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Sh_Token_Information {
+  id               String  @id @default(uuid())
+  sh_refresh_token String?
+  sh_user_id       String?
+}
+
+model Sh_User_Master_Information {
+  id                                          String                          @id @default(uuid())
+  user_username                               String?                         @db.VarChar(200)
+  user_email_address                          String?                         @db.VarChar(200)
+  user_phone_number                           String?                         @db.VarChar(200)
+  user_password                               String?
+  user_account_type                           User_Account_Types              @default(NORMAL)
+  user_account_is_normal_account              Boolean?                        @default(false)
+  user_profile_picture_url                    String?                         @db.VarChar(200)
+  user_profile_picture_image_id               String?                         @db.VarChar(200)
+  user_account_is_verified                    Boolean?                        @default(false)
+  user_account_is_active                      Boolean?                        @default(false)
+  user_account_is_locked                      Boolean?                        @default(false)
+  user_account_verification_code              String?                         @db.VarChar(200)
+  user_account_verification_code_created_at   DateTime?                       @default(now())
+  user_account_verification_code_expiry_at    DateTime?
+  user_account_password_reset_code            String?                         @db.VarChar(200)
+  user_account_password_reset_code_created_at DateTime?                       @default(now())
+  user_account_password_reset_code_expiry_at  DateTime?
+  user_account_information_created_at         DateTime?                       @default(now())
+  user_account_information_updated_at         DateTime?                       @updatedAt
+  user_account_information_deleted_at         DateTime?
+  user_account_referred_by                    Sh_Referral_Master_Information? @relation("sh_user_account_information_to_referral_master_information", fields: [user_account_referred_by_Id], references: [id])
+  user_account_referred_by_Id                 String?
+  sh_referral_master_information              Sh_Referral_Master_Information? @relation(fields: [sh_referral_master_information_Id], references: [id])
+  sh_referral_master_information_Id           String?                         @unique
+  sh_user_customer_information                Sh_Customer_Master_Information?
+
+}
+
+model Sh_Customer_Master_Information {
+  id                                       String                                @id @default(uuid())
+  customer_first_name                      String?                               @db.VarChar(200)
+  customer_last_name                       String?                               @db.VarChar(200)
+  customer_middle_name                     String?                               @db.VarChar(200)
+  customer_gender                          String?                               @db.VarChar(200)
+  customer_email_address                   String?                               @db.VarChar(200)
+  customer_phone_number                    String?                               @db.VarChar(200)
+  customer_date_of_birth                   DateTime?
+  customer_identification_type             String?                               @db.VarChar(200)
+  customer_identification_number           String?                               @db.VarChar(200)
+  customer_identification_country_of_issue String?                               @db.VarChar(200)
+  customer_address_information             Sh_Customer_Address_Information?
+  customer_address_information_Id          String?                               @unique
+  user_account_information                 Sh_User_Master_Information?           @relation(fields: [user_account_information_Id], references: [id])
+  user_account_information_Id              String?                               @unique
+  customer_events_master_information       Sh_Event_Master_Information[]
+  customer_invited_party                   Sh_Event_Members_Master_Information[]
+  customer_information_created_at          DateTime?                             @default(now())
+  customer_information_updated_at          DateTime?                             @updatedAt
+  customer_information_deleted_at          DateTime?
+
+}
+
+model Sh_Customer_Address_Information {
+  id                                      String                          @id @default(uuid())
+  customer_country                        String?                         @db.VarChar(200)
+  customer_city                           String?                         @db.VarChar(200)
+  customer_state                          String?                         @db.VarChar(200)
+  customer_street                         String?                         @db.VarChar(200)
+  customer_postal_code                    String?                         @db.VarChar(200)
+  customer_address_type                   String?                         @db.VarChar(200)
+  customer_address_one                    String?                         @db.VarChar(200)
+  customer_address_two                    String?                         @db.VarChar(200)
+  customer_address_information_created_at DateTime?                       @default(now())
+  customer_address_information_updated_at DateTime?                       @updatedAt
+  customer_address_information_deleted_at DateTime?
+  customer_master_information             Sh_Customer_Master_Information? @relation(fields: [customer_master_information_Id], references: [id])
+  customer_master_information_Id          String?                         @unique
+}
+
+model Sh_Event_Master_Information {
+  id                                     String                                @id @default(uuid())
+  sh_event_name                          String?                               @db.VarChar(200)
+  sh_event_description                   String?                               @db.VarChar(200)
+  sh_event_capacity                      String?                               @db.VarChar(200)
+  sh_event_status                        String?                               @db.VarChar(200)
+  sh_event_dress_code                    String?                               @db.VarChar(200)
+  sh_event_start_date                    DateTime?                             @default(now())
+  sh_event_start_time                    String?                               @db.VarChar(200)
+  sh_event_end_date                      DateTime?                             @default(now())
+  sh_event_end_time                      String?                               @db.VarChar(200)
+  sh_event_location_information          Sh_Event_Location_Information?
+  sh_customer_master_information         Sh_Customer_Master_Information        @relation(fields: [sh_customer_master_information_Id], references: [id])
+  sh_customer_master_information_Id      String                                @unique
+  sh_event_members                       Sh_Event_Members_Master_Information[]
+  sh_event_master_information_created_at DateTime?                             @default(now())
+  sh_event_master_information_updated_at DateTime?                             @updatedAt
+  sh_event_master_information_deleted_at DateTime?
+}
+
+model Sh_Event_Location_Information {
+  id                                       String                       @id @default(uuid())
+  sh_event_location_name                   String?                      @db.VarChar(200)
+  sh_event_location_country                String?                      @db.VarChar(200)
+  sh_event_location_state                  String?                      @db.VarChar(200)
+  sh_event_location_city                   String?                      @db.VarChar(200)
+  sh_event_location_formatted_address      String?                      @db.VarChar(200)
+  sh_event_location_latitude               String?                      @db.VarChar(200)
+  sh_event_location_longitude              String?                      @db.VarChar(200)
+  sh_event_street_name                     String?                      @db.VarChar(200)
+  sh_event_street_number                   String?                      @db.VarChar(200)
+  sh_event_street_address                  String?                      @db.VarChar(200)
+  sh_event_appartment_name                 String?                      @db.VarChar(200)
+  sh_event_house_number                    String?                      @db.VarChar(200)
+  sh_event_country_code                    String?                      @db.VarChar(200)
+  sh_event_zip_code                        String?                      @db.VarChar(200)
+  sh_event_administrative_area_level_1     String?                      @db.VarChar(200)
+  sh_event_administrative_area_level_2     String?                      @db.VarChar(200)
+  sh_event_administrative_area_level_3     String?                      @db.VarChar(200)
+  sh_event_administrative_area_level_4     String?                      @db.VarChar(200)
+  sh_event_administrative_area_level_5     String?                      @db.VarChar(200)
+  sh_event_locality                        String?                      @db.VarChar(200)
+  sh_event_sublocality                     String?                      @db.VarChar(200)
+  sh_event_neighborhood                    String?                      @db.VarChar(200)
+  sh_event_route                           String?                      @db.VarChar(200)
+  sh_event_ward                            String?                      @db.VarChar(200)
+  sh_event_postal_code                     String?                      @db.VarChar(200)
+  customer_master_information_Id           String?                      @unique
+  sh_event_master_information              Sh_Event_Master_Information? @relation(fields: [sh_event_master_information_Id], references: [id])
+  sh_event_master_information_Id           String?                      @unique
+  sh_event_location_information_created_at DateTime?                    @default(now())
+  sh_event_location_information_updated_at DateTime?                    @updatedAt
+  sh_event_location_information_deleted_at DateTime?
+}
+
+model Sh_Event_Members_Master_Information {
+  id                                             String                         @id @default(uuid())
+  sh_customer_master_information                 Sh_Customer_Master_Information @relation(fields: [sh_customer_master_information_Id], references: [id])
+  sh_customer_master_information_Id              String                         @unique
+  sh_event_master_information                    Sh_Event_Master_Information?   @relation(fields: [sh_event_master_information_Id], references: [id])
+  sh_event_master_information_Id                 String?                        @unique
+  sh_event_invitation_status                     String?                        @db.VarChar(200)
+  sh_event_members_master_information_created_at DateTime?                      @default(now())
+  sh_event_members_master_information_updated_at DateTime?                      @updatedAt
+  sh_event_members_master_information_deleted_at DateTime?
+}
+
+enum User_Account_Types {
+  NORMAL
+  PREMIUM
+}
+
+model Sh_Referral_Master_Information {
+  id                                   String                       @id @default(uuid())
+  sh_referral_code                     String                       @db.VarChar(200)
+  sh_referral_code_referred_number     Decimal?                     @default(0.00) @db.Decimal(16, 4)
+  sh_referral_code_earn_points         Decimal?                     @default(0.00) @db.Decimal(16, 4)
+  sh_referred_user_account_information Sh_User_Master_Information[] @relation("sh_user_account_information_to_referral_master_information")
+  sh_referral_code_belongs_to          Sh_User_Master_Information?
+  sh_referral_code_created_at          DateTime?                    @default(now())
+}
