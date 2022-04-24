@@ -1,13 +1,126 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "REST API",
-      "description": ""
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": ""
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/sh_create_user_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_user_email_address": {
+                  "example": "any"
+                },
+                "sh_user_password": {
+                  "example": "any"
+                },
+                "sh_user_phone_number": {
+                  "example": "any"
+                },
+                "sh_user_sign_in_with": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     },
-    "host": "localhost:3000",
-    "basePath": "/",
-    "schemes": [
-      "http"
-    ]
+    "/sh_account_code_verification": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_verification_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_create_customer_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customer_username": {
+                  "example": "any"
+                },
+                "customer_first_name": {
+                  "example": "any"
+                },
+                "customer_middle_name": {
+                  "example": "any"
+                },
+                "customer_last_name": {
+                  "example": "any"
+                },
+                "customer_email_address": {
+                  "example": "any"
+                },
+                "customer_phone_number": {
+                  "example": "any"
+                },
+                "customer_gender": {
+                  "example": "any"
+                },
+                "customer_date_of_birth": {
+                  "example": "any"
+                },
+                "customer_identification_type": {
+                  "example": "any"
+                },
+                "customer_identification_number": {
+                  "example": "any"
+                },
+                "customer_identification_country_of_issue": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
 }
