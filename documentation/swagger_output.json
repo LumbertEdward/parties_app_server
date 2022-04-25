@@ -68,6 +68,165 @@
         }
       }
     },
+    "/sh_resend_verification_code": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_email_address": {
+                  "example": "any"
+                },
+                "sh_phone_number": {
+                  "example": "any"
+                },
+                "sh_resend_with": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_set_phone_pin": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_phone_number": {
+                  "example": "any"
+                },
+                "sh_phone_pin": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_reset_code": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_email_address": {
+                  "example": "any"
+                },
+                "sh_phone_number": {
+                  "example": "any"
+                },
+                "sh_reset_with": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_reset_code_verification": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_account_verification_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_set_new_password": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_new_password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_set_new_pin": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_phone_pin": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/sh_create_customer_information": {
       "post": {
         "description": "",
@@ -109,6 +268,315 @@
                   "example": "any"
                 },
                 "customer_identification_country_of_issue": {
+                  "example": "any"
+                },
+                "customer_referral_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_create_customer_address_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customer_id": {
+                  "example": "any"
+                },
+                "customer_country": {
+                  "example": "any"
+                },
+                "customer_state": {
+                  "example": "any"
+                },
+                "customer_city": {
+                  "example": "any"
+                },
+                "customer_street": {
+                  "example": "any"
+                },
+                "customer_address_type": {
+                  "example": "any"
+                },
+                "customer_postal_code": {
+                  "example": "any"
+                },
+                "customer_address_line_1": {
+                  "example": "any"
+                },
+                "customer_address_line_2": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_login_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_email_address": {
+                  "example": "any"
+                },
+                "sh_user_password": {
+                  "example": "any"
+                },
+                "sh_phone_pin": {
+                  "example": "any"
+                },
+                "sh_user_phone_number": {
+                  "example": "any"
+                },
+                "sh_login_with": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_refresh_token_information/{sh_refresh_token}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sh_refresh_token",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_create_event_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customer_id": {
+                  "example": "any"
+                },
+                "sh_event_name": {
+                  "example": "any"
+                },
+                "sh_event_description": {
+                  "example": "any"
+                },
+                "sh_event_capacity": {
+                  "example": "any"
+                },
+                "sh_event_status": {
+                  "example": "any"
+                },
+                "sh_event_dress_code": {
+                  "example": "any"
+                },
+                "sh_event_start_date": {
+                  "example": "any"
+                },
+                "sh_event_start_time": {
+                  "example": "any"
+                },
+                "sh_event_end_date": {
+                  "example": "any"
+                },
+                "sh_event_end_time": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_create_event_location_information/{sh_event_id}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "sh_event_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "event_location_name": {
+                  "example": "any"
+                },
+                "sh_event_location_country": {
+                  "example": "any"
+                },
+                "sh_event_location_state": {
+                  "example": "any"
+                },
+                "sh_event_location_city": {
+                  "example": "any"
+                },
+                "sh_event_location_formatted_address": {
+                  "example": "any"
+                },
+                "sh_event_location_latitude": {
+                  "example": "any"
+                },
+                "sh_event_location_longitude": {
+                  "example": "any"
+                },
+                "sh_event_street_name": {
+                  "example": "any"
+                },
+                "sh_event_street_number": {
+                  "example": "any"
+                },
+                "sh_event_street_address": {
+                  "example": "any"
+                },
+                "sh_event_appartment_name": {
+                  "example": "any"
+                },
+                "sh_event_house_number": {
+                  "example": "any"
+                },
+                "sh_event_country_code": {
+                  "example": "any"
+                },
+                "sh_event_zip_code": {
+                  "example": "any"
+                },
+                "sh_event_administrative_area_level_1": {
+                  "example": "any"
+                },
+                "sh_event_administrative_area_level_2": {
+                  "example": "any"
+                },
+                "sh_event_administrative_area_level_3": {
+                  "example": "any"
+                },
+                "sh_event_administrative_area_level_4": {
+                  "example": "any"
+                },
+                "sh_event_administrative_area_level_5": {
+                  "example": "any"
+                },
+                "sh_event_locality": {
+                  "example": "any"
+                },
+                "sh_event_sublocality": {
+                  "example": "any"
+                },
+                "sh_event_neighborhood": {
+                  "example": "any"
+                },
+                "sh_event_route": {
+                  "example": "any"
+                },
+                "sh_event_ward": {
+                  "example": "any"
+                },
+                "sh_event_postal_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_create_event_members_information": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_event_id": {
+                  "example": "any"
+                },
+                "sh_customer_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_invite_member_information": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_member_id": {
                   "example": "any"
                 }
               }

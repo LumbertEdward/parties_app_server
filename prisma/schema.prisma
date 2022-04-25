@@ -21,6 +21,7 @@ model Sh_User_Master_Information {
   user_username                               String?                         @db.VarChar(200)
   user_email_address                          String?                         @db.VarChar(200)
   user_phone_number                           String?                         @db.VarChar(200)
+  user_phone_pin                              String?                         @db.VarChar(200)
   user_password                               String?
   user_account_type                           User_Account_Types              @default(NORMAL)
   user_account_is_normal_account              Boolean?                        @default(false)
@@ -134,7 +135,6 @@ model Sh_Event_Location_Information {
   sh_event_route                           String?                      @db.VarChar(200)
   sh_event_ward                            String?                      @db.VarChar(200)
   sh_event_postal_code                     String?                      @db.VarChar(200)
-  customer_master_information_Id           String?                      @unique
   sh_event_master_information              Sh_Event_Master_Information? @relation(fields: [sh_event_master_information_Id], references: [id])
   sh_event_master_information_Id           String?                      @unique
   sh_event_location_information_created_at DateTime?                    @default(now())
