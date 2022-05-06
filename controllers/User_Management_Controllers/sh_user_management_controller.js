@@ -1104,7 +1104,7 @@ exports.sh_refresh_token_information_controller = async function (req, res, next
         const accessToken = jwt.sign({
             userId: payloadInfo.userId,
         },
-        "weliveoncesotakeadvatagofthelifethealmightyhasgivenyouandmakeadifferenceintheworld",
+        process.env.ACCESS_TOKEN,
         { expiresIn: "30m" })
 
         res.status(200).json({

@@ -109,7 +109,7 @@ exports.sh_create_event_location_information_controller = async function (req, r
             throw error
         }
 
-        const eventInformation = await prisma.Sh_Event_Master_Information.findOne({
+        const eventInformation = await prisma.Sh_Event_Master_Information.findFirst({
             where: {
                 id: sh_event_id
             }
