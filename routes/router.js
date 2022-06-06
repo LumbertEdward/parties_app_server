@@ -3,6 +3,11 @@ const {
     sh_create_event_controller, 
     sh_create_event_location_information_controller,
     sh_create_event_members_controller,
+    sh_update_event_information_controller,
+    sh_remove_event_controller,
+    sh_get_event_members_controller,
+    sh_get_customer_created_events_controller,
+    sh_get_customer_invited_and_pending_events_controller,
     sh_invite_member_controller
  } = require('../controllers/Parties_Management_Controllers/sh_events_management_controller');
 
@@ -55,6 +60,16 @@ router.post('/sh_create_event_location_information/:sh_event_id', sh_create_even
 
 router.post('/sh_create_event_members_information', sh_create_event_members_controller)
 
+router.patch('/sh_update_event_information/:sh_event_id', sh_update_event_information_controller)
+
 router.patch('/sh_invite_member_information', sh_invite_member_controller)
+
+router.delete('/sh_remove_event_information/:sh_event_id', sh_remove_event_controller)
+
+router.get('/sh_get_event_members_information/:sh_event_id', sh_get_event_members_controller)
+
+router.get('/sh_get_customer_created_events_information/:sh_customer_id', sh_get_customer_created_events_controller)
+
+router.get('/sh_get_all_events_infomation_by_customer/:sh_customer_id', sh_get_customer_invited_and_pending_events_controller)
 
 module.exports = router;
