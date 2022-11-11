@@ -44,7 +44,7 @@
         }
       }
     },
-    "/sh_account_code_verification": {
+    "/sh_user_account_code_verification": {
       "post": {
         "description": "",
         "parameters": [
@@ -68,7 +68,7 @@
         }
       }
     },
-    "/sh_resend_verification_code": {
+    "/sh_user_resend_verification_code": {
       "post": {
         "description": "",
         "parameters": [
@@ -98,7 +98,7 @@
         }
       }
     },
-    "/sh_set_phone_pin": {
+    "/sh_user_set_phone_pin": {
       "post": {
         "description": "",
         "parameters": [
@@ -108,9 +108,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "sh_phone_number": {
-                  "example": "any"
-                },
                 "sh_phone_pin": {
                   "example": "any"
                 }
@@ -125,7 +122,7 @@
         }
       }
     },
-    "/sh_reset_code": {
+    "/sh_user_reset_code": {
       "post": {
         "description": "",
         "parameters": [
@@ -155,7 +152,7 @@
         }
       }
     },
-    "/sh_reset_code_verification": {
+    "/sh_user_reset_code_verification": {
       "post": {
         "description": "",
         "parameters": [
@@ -179,7 +176,7 @@
         }
       }
     },
-    "/sh_set_new_password": {
+    "/sh_user_set_new_password": {
       "post": {
         "description": "",
         "parameters": [
@@ -203,7 +200,55 @@
         }
       }
     },
-    "/sh_set_new_pin": {
+    "/sh_user_reset_pin": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_phone_number": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_user_reset_pin_code_verification": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sh_pin_reset_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/sh_user_set_new_pin": {
       "post": {
         "description": "",
         "parameters": [
@@ -227,7 +272,7 @@
         }
       }
     },
-    "/sh_create_customer_information": {
+    "/sh_user_create_customer_information": {
       "post": {
         "description": "",
         "parameters": [
@@ -284,7 +329,7 @@
         }
       }
     },
-    "/sh_create_customer_address_information": {
+    "/sh_user_create_customer_address_information": {
       "post": {
         "description": "",
         "parameters": [
@@ -332,7 +377,7 @@
         }
       }
     },
-    "/sh_login_information": {
+    "/sh_user_login_information": {
       "post": {
         "description": "",
         "parameters": [
@@ -346,9 +391,6 @@
                   "example": "any"
                 },
                 "sh_user_password": {
-                  "example": "any"
-                },
-                "sh_phone_pin": {
                   "example": "any"
                 },
                 "sh_user_phone_number": {
@@ -368,7 +410,7 @@
         }
       }
     },
-    "/sh_refresh_token_information/{sh_refresh_token}": {
+    "/sh_user_refresh_token_information/{sh_refresh_token}": {
       "post": {
         "description": "",
         "parameters": [

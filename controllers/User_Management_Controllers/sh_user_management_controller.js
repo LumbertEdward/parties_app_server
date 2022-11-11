@@ -358,8 +358,8 @@ exports.sh_user_resend_verification_code_controller = async function (req, res, 
     }
 }
 
-exports.sh_user_set_phone_pin_controller = async function (req, res, next) {
-    const { sh_phone_number, sh_phone_pin } = req.body;
+exports.sh_user_reset_pin_controller = async function (req, res, next) {
+    const { sh_phone_number } = req.body;
 
     try {
         if (!req.isAuth) {
@@ -370,12 +370,6 @@ exports.sh_user_set_phone_pin_controller = async function (req, res, next) {
 
         if (validator.isEmpty(sh_phone_number)) {
             const error = new Error("Enter valid phone number")
-            error.code = 400
-            throw error
-        }
-
-        if (validator.isEmpty(sh_phone_pin)) {
-            const error = new Error("Enter valid phone pin")
             error.code = 400
             throw error
         }
@@ -392,21 +386,151 @@ exports.sh_user_set_phone_pin_controller = async function (req, res, next) {
             throw error
         }
 
+        const one_time_password = otpGenerator.generate(6,
+            {
+                upperCaseAlphabets: false,
+                lowerCaseAlphabets: false,
+                digits: true,
+                specialChars: false,
+            }
+        )
+
         const updatedUser = await prisma.Sh_User_Master_Information.update({
             where: {
                 id: userInformation.id
             },
             data: {
-                user_phone_pin: sh_phone_pin,
+                user_account_pin_reset_code: one_time_password,
+                user_account_pin_reset_code_created_at: new Date(),
+                user_account_pin_reset_code_expiry_at: new Date(Date.now() + 3600000)
             }
         })
 
         res.status(200).json({
             status: 200,
             message: "Phone pin set successfully",
-            ...updatedUser
+            user_account_pin_reset_code: updatedUser.user_account_pin_reset_code,
         })
 
+    } catch (error) {
+        res.json({ message: error.message, status: error.code })
+        next()
+    }
+}
+
+exports.sh_user_pin_reset_code_verification_controller = async function (req, res, next) {
+    const { sh_pin_reset_code } = req.body;
+    try{
+        const errors = []
+        if (validator.isEmpty(sh_pin_reset_code)) {
+            errors.push({ message: 'Enter valid pin reset code' })
+        }
+
+        if (errors.length > 0) {
+            const error = new Error("Invalid input")
+            error.data = errors
+            error.code = 400
+            throw error
+        }
+
+        const userInformation = await prisma.Sh_User_Master_Information.findFirst({
+            where: {
+                user_account_pin_reset_code: sh_pin_reset_code,
+                user_account_pin_reset_code_expiry_at: {
+                    gte: new Date()
+                }
+            }
+        })
+
+        if (!userInformation) {
+            const error = new Error("Pin reset code does not exist")
+            error.code = 404
+            throw error
+        }
+
+        const accessToken = jwt.sign({
+            userId: userInformation.id,
+            email: userInformation.user_email_address,
+        },
+        process.env.ACCESS_TOKEN,
+        { expiresIn: '30m' } 
+        )
+
+        const refreshToken = jwt.sign({
+            userId: userInformation.id,
+            email: userInformation.user_email_address,
+        }, 
+        process.env.REFRESH_TOKEN,
+        { expiresIn: '30d' })
+
+        await prisma.Sh_Token_Information.create({
+            data: {
+                sh_user_id: userInformation.id,
+                sh_refresh_token: refreshToken,
+            }
+        })
+
+        res.status(200).json({
+            status: 200,
+            message: "Pin reset code verified successfully",
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            userId: userInformation.id,
+        })
+    }
+    catch (error) {
+        res.json({ message: error.message, status: error.code })
+        next()
+    }
+}
+
+exports.sh_set_new_pin_controller = async function (req, res, next) {
+    const { sh_phone_pin } = req.body;
+
+    try {
+        if(!req.isAuth){
+            const error = new Error("Unauthorised access, Login to continue")
+            error.code = 401
+            throw error
+        }
+
+        if (validator.isEmpty(sh_phone_pin)) {
+            const error = new Error("Enter valid phone pin")
+            error.code = 400
+            throw error
+        }
+
+        const userInformation = await prisma.Sh_User_Master_Information.findFirst(
+            {
+                where: {
+                    id: req.userId
+                }
+            }
+        )
+
+        if(!userInformation){
+            const error = new Error("User does not exist")
+            error.code = 404
+            throw error
+        }
+
+        const newPin = await bcrypt.hash(sh_phone_pin, 10)
+
+        const updatedUser = await prisma.Sh_User_Master_Information.update({
+            where: {
+                id: userInformation.id
+            },
+            data: {
+                user_account_pin: newPin,
+            }
+        })
+
+        res.status(200).json({
+            status: 200,
+            message: "Phone pin set successfully",
+            user_account_pin: updatedUser.user_account_pin,
+        })
+        
     } catch (error) {
         res.json({ message: error.message, status: error.code })
         next()
@@ -661,7 +785,7 @@ exports.sh_set_new_password_controller = async function (req, res, next) {
     }
 }
 
-exports.sh_set_new_pin_controller = async function (req, res, next) {
+exports.sh_user_set_phone_pin_controller = async function (req, res, next) {
     const { sh_phone_pin } = req.body;
 
     try {
@@ -766,7 +890,7 @@ exports.sh_create_customer_information_controller = async (req, res, next) => {
                             customer_email_address: customer_email_address,
                             customer_phone_number: customer_phone_number,
                             customer_gender: customer_gender,
-                            customer_date_of_birth: customer_date_of_birth,
+                            customer_date_of_birth: new Date(),
                             customer_identification_type: customer_identification_type,
                             customer_identification_number: customer_identification_number,
                             customer_identification_country_of_issue: customer_identification_country_of_issue,
@@ -780,7 +904,7 @@ exports.sh_create_customer_information_controller = async (req, res, next) => {
                             customer_email_address: customer_email_address,
                             customer_phone_number: customer_phone_number,
                             customer_gender: customer_gender,
-                            customer_date_of_birth: customer_date_of_birth,
+                            customer_date_of_birth: new Date(),
                             customer_identification_type: customer_identification_type,
                             customer_identification_number: customer_identification_number,
                             customer_identification_country_of_issue: customer_identification_country_of_issue,
@@ -900,13 +1024,13 @@ exports.sh_create_customer_address_information_controller = async function (req,
 }
 
 exports.sh_login_user_information_controller = async function (req, res, next) {
-    const { sh_email_address, sh_user_password, sh_phone_pin, sh_user_phone_number, sh_login_with } = req.body;
+    const { sh_user_email_address, sh_user_password, sh_user_phone_number, sh_login_with } = req.body;
 
     try {
         if (sh_login_with === "sh_email_address") {
             const errors = []
 
-            if (!validator.isEmail(sh_email_address)) {
+            if (!validator.isEmail(sh_user_email_address)) {
                 errors.push({
                     message: "Enter a valid email address"
                 })
@@ -926,7 +1050,7 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
 
             const userInformation = await prisma.Sh_User_Master_Information.findFirst({
                 where: {
-                    sh_email_address: sh_email_address,
+                    user_email_address: sh_user_email_address,
                 }
             })
 
@@ -936,7 +1060,7 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
                 throw error
             }
 
-            const userPassword = await bcrypt.compare(sh_user_password, userInformation.sh_user_password)
+            const userPassword = await bcrypt.compare(sh_user_password, userInformation.user_password)
 
             if (!userPassword) {
                 const error = new Error("Wrong email or password")
@@ -952,14 +1076,14 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
 
             const accessToken = jwt.sign({
                 userId: userInformation.id,
-                email: userInformation.sh_email_address,
+                email: userInformation.user_email_address,
             },
                 "weliveoncesotakeadvatagofthelifethealmightyhasgivenyouandmakeadifferenceintheworld",
-                { expiresIn: "30m" })
+                { expiresIn: "30d" })
 
             const refreshToken = jwt.sign({
                 userId: userInformation.id,
-                email: userInformation.sh_email_address,
+                email: userInformation.user_email_address,
             },
                 "d2VsaXZlb25jZXNvdGFrZWFkdmF0YWdvZnRoZWxpZmV0aGVhbG1pZ2h0eWhhc2dpdmVueW91YW5kbWFrZWFkaWZmZXJlbmNlaW50aGV3b3JsZA",
                 { expiresIn: "30d" })
@@ -987,12 +1111,6 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
                 })
             }
 
-            if (validator.isEmpty(sh_phone_pin)) {
-                errors.push({
-                    message: "Enter a valid phone pin"
-                })
-            }
-
             if (errors.length > 0) {
                 const error = new Error("Invalid inputs")
                 error.code = 400
@@ -1011,15 +1129,7 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
                 throw error
             }
 
-            const userPhonePin = await bcrypt.compare(sh_phone_pin, userInformation.user_phone_pin)
-
-            if (!userPhonePin) {
-                const error = new Error("Wrong phone pin")
-                error.code = 400
-                throw error
-            }
-
-            if (!userInformation.user_account_is_verified) {
+            if (userInformation.user_account_is_verified == false) {
                 const error = new Error("User account is not verified")
                 error.code = 401
                 throw error
@@ -1027,14 +1137,14 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
 
             const accessToken = jwt.sign({
                 userId: userInformation.id,
-                email: userInformation.sh_email_address,
+                email: userInformation.user_email_address,
             },
                 "weliveoncesotakeadvatagofthelifethealmightyhasgivenyouandmakeadifferenceintheworld",
-                { expiresIn: "30m" })
+                { expiresIn: "30d" })
 
             const refreshToken = jwt.sign({
                 userId: userInformation.id,
-                email: userInformation.sh_email_address,
+                email: userInformation.user_email_address,
             },
                 "d2VsaXZlb25jZXNvdGFrZWFkdmF0YWdvZnRoZWxpZmV0aGVhbG1pZ2h0eWhhc2dpdmVueW91YW5kbWFrZWFkaWZmZXJlbmNlaW50aGV3b3JsZA",
                 { expiresIn: "30d" })
@@ -1053,9 +1163,6 @@ exports.sh_login_user_information_controller = async function (req, res, next) {
                 refreshToken: refreshToken,
                 id: userInformation.id,
             })
-
-
-
         }
     }
     catch (error) {

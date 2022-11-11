@@ -36,6 +36,9 @@ model Sh_User_Master_Information {
   user_account_password_reset_code            String?                         @db.VarChar(200)
   user_account_password_reset_code_created_at DateTime?                       @default(now())
   user_account_password_reset_code_expiry_at  DateTime?
+  user_account_pin_reset_code                 String?                         @db.VarChar(200)
+  user_account_pin_reset_code_created_at      DateTime?                       @default(now())
+  user_account_pin_reset_code_expiry_at       DateTime?
   user_account_information_created_at         DateTime?                       @default(now())
   user_account_information_updated_at         DateTime?                       @updatedAt
   user_account_information_deleted_at         DateTime?
@@ -93,7 +96,7 @@ model Sh_Event_Master_Information {
   sh_event_name                          String?                               @db.VarChar(200)
   sh_event_description                   String?                               @db.VarChar(200)
   sh_event_capacity                      String?                               @db.VarChar(200)
-  sh_event_status                        String?                               @db.VarChar(200)
+  sh_event_status                        Event_Status?                         @default(ACTIVE)
   sh_event_dress_code                    String?                               @db.VarChar(200)
   sh_event_start_date                    DateTime?                             @default(now())
   sh_event_start_time                    String?                               @db.VarChar(200)
@@ -157,6 +160,12 @@ model Sh_Event_Members_Master_Information {
 enum User_Account_Types {
   NORMAL
   PREMIUM
+}
+
+enum Event_Status {
+  ACTIVE
+  CANCELLED
+  COMPLETED
 }
 
 model Sh_Referral_Master_Information {
